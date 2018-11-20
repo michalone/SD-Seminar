@@ -57,8 +57,8 @@ table 50101 "CSD Seminar"
         {
             Caption = 'Comment';
             Editable = false;
-            //FieldClass = FlowField;
-            //CalcFormula=exist("CSD Seminar Comment Line" where("Table Name"= const("Seminar"),"No."=Field("No.")));
+            FieldClass = FlowField;
+            CalcFormula = exist ("CSD Seminar Comment Line" where ("Table Name" = const ("Seminar"), "No." = Field ("No.")));
         }
         field(100; "Seminar Price"; Decimal)
         {
@@ -129,6 +129,16 @@ table 50101 "CSD Seminar"
     trigger OnRename()
     begin
         "Last Date Modified" := today;
+    end;
+
+    trigger OnDelete()
+    var
+        SeminarCommentLine: Record "CSD Seminar Comment Line";
+    begin
+        SeminarCommentLine.SetRange("Table Name", SeminarCommentLine."Table Name"::Seminar);
+        SeminarCommentLine.SetRange("No.", "No.");
+        if not SeminarCommentLine.IsEmpty() then
+            SeminarCommentLine.DeleteAll(true);
     end;
 
     procedure AssistEdit(): Boolean
