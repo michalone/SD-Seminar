@@ -147,6 +147,23 @@ page 50110 "CSD Seminar Registration"
                     RunObject = Page 50124;
                     RunPageLink = "Document No." = Field ("No.");
                 }
+                action("&Print")
+                {
+                    Caption = '&Print';
+                    Image = Print;
+                    Promoted = true;
+                    PromotedCategory = Process;
+                    PromotedIsBig = true;
+                    trigger OnAction()
+                    var
+                        SeminarReportSelection: Record "CSD Seminar Report Selections";
+                        SeminarRegistration: Record "CSD Seminar Reg. Header";
+                    begin
+                        SeminarRegistration := Rec;
+                        SeminarRegistration.SetRecFilter();
+                        SeminarReportSelection.PrintReportSelection(SeminarReportSelection.Usage::Registration, SeminarRegistration);
+                    end;
+                }
             }
         }
         area(Processing)
